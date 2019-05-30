@@ -12,9 +12,9 @@ var (
 	Sugar  *zap.SugaredLogger
 	Logger *zap.Logger
 	// Atom.SetLevel(zap.DebugLevel) 程序运行时动态级别
-	Atom zap.AtomicLevel
-	ServerType = os.Getenv("SERVER_TYPE")
-	serverTypeProd  = "production"
+	Atom           zap.AtomicLevel
+	ServerType     = os.Getenv("SERVER_TYPE")
+	serverTypeProd = "production"
 )
 
 func GetLogPath() string {
@@ -65,4 +65,44 @@ func init() {
 	Logger = zap.New(core, zap.AddCaller(), zap.AddStacktrace(stackLevel))
 	defer Logger.Sync() // flushes buffer, if any
 	Sugar = Logger.Sugar()
+}
+
+func Info(args ...interface{}) {
+	Sugar.Info(args...)
+}
+
+func Infof(template string, args ...interface{}) {
+	Sugar.Infof(template, args...)
+}
+
+func Warn(args ...interface{}) {
+	Sugar.Warn(args...)
+}
+
+func Warnf(template string, args ...interface{}) {
+	Sugar.Warnf(template, args...)
+}
+
+func Debug(args ...interface{}) {
+	Sugar.Debug(args...)
+}
+
+func Debugf(template string, args ...interface{}) {
+	Sugar.Debugf(template, args...)
+}
+
+func Error(msg string, fields ...zap.Field) {
+	Logger.Error(msg, fields...)
+}
+
+func Errorf(template string, args ...interface{}) {
+	Sugar.Errorf(template, args...)
+}
+
+func Fatal(msg string, fields ...zap.Field) {
+	Logger.Fatal(msg, fields...)
+}
+
+func Fatalf(template string, args ...interface{}) {
+	Sugar.Fatalf(template, args...)
 }
