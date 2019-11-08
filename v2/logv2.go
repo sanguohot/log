@@ -43,8 +43,8 @@ func init() {
 	hook := lumberjack.Logger{
 		Filename:   logFilePath,
 		MaxSize:    50, // MB
-		MaxBackups: 3,
-		MaxAge:     3,    //days
+		MaxBackups: 20,
+		MaxAge:     7,    //days
 		Compress:   true, // disabled by default
 		LocalTime:  true,
 	}
@@ -71,8 +71,8 @@ func init() {
 		return false
 	})
 	// 获取 info、warn日志文件的io.Writer 抽象 getWriter() 在下方实现
-	writer := getWriter(filepath.Join(util.LogDirPath, util.LinkFilePath))
-	linkSync := zapcore.AddSync(writer)
+	//writer := getWriter(filepath.Join(util.LogDirPath, util.LinkFilePath))
+	//linkSync := zapcore.AddSync(writer)
 	consoleSync := zapcore.AddSync(os.Stdout)
 	fileSync := zapcore.AddSync(&hook)
 	// 最后创建具体的Logger
@@ -84,7 +84,7 @@ func init() {
 	core := zapcore.NewTee(
 		zapcore.NewCore(zapcore.NewConsoleEncoder(config), consoleSync, level), // 日志同步到控制台
 		zapcore.NewCore(zapcore.NewConsoleEncoder(config), fileSync, level),    // 日志同步到app.log
-		zapcore.NewCore(zapcore.NewConsoleEncoder(config), linkSync, level),    // 日志同步到link.log(symbol link)，用于切割文件
+		//zapcore.NewCore(zapcore.NewConsoleEncoder(config), linkSync, level),    // 日志同步到link.log(symbol link)，用于切割文件
 	)
 
 	Logger = zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
