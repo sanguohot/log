@@ -13,8 +13,8 @@ import (
 )
 
 var (
-	SugarV2  *zap.SugaredLogger
-	LoggerV2 *zap.Logger
+	Sugar  *zap.SugaredLogger
+	Logger *zap.Logger
 )
 
 // 判断所给路径是否为文件夹
@@ -87,9 +87,9 @@ func init() {
 		zapcore.NewCore(zapcore.NewConsoleEncoder(config), linkSync, level),    // 日志同步到link.log(symbol link)，用于切割文件
 	)
 
-	LoggerV2 = zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
-	defer LoggerV2.Sync() // flushes buffer, if any
-	SugarV2 = LoggerV2.Sugar()
+	Logger = zap.New(core, zap.AddCaller(), zap.AddStacktrace(zap.ErrorLevel))
+	defer Logger.Sync() // flushes buffer, if any
+	Sugar = Logger.Sugar()
 }
 
 func getWriter(filename string) io.Writer {

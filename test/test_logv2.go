@@ -7,15 +7,15 @@ import (
 
 func main() {
 	for {
-		log.SugarV2.Debug(">>>>>>>>>>>> sugar debug")
-		log.SugarV2.Info(">>>>>>>>>>>> sugar info")
-		log.SugarV2.Warn(">>>>>>>>>>>> sugar warn")
-		log.SugarV2.Error(">>>>>>>>>>>> sugar error")
+		log.Sugar.Debug(">>>>>>>>>>>> sugar debug")
+		log.Sugar.Info(">>>>>>>>>>>> sugar info")
+		log.Sugar.Warn(">>>>>>>>>>>> sugar warn")
+		log.Sugar.Error(">>>>>>>>>>>> sugar error")
 
-		log.LoggerV2.Debug(">>>>>>>>>>>> logger debug")
-		log.LoggerV2.Info(">>>>>>>>>>>> logger info")
-		log.LoggerV2.Warn(">>>>>>>>>>>> logger warn")
-		log.LoggerV2.Error(">>>>>>>>>>>> logger error")
+		log.Logger.Debug(">>>>>>>>>>>> logger debug")
+		log.Logger.Info(">>>>>>>>>>>> logger info")
+		log.Logger.Warn(">>>>>>>>>>>> logger warn")
+		log.Logger.Error(">>>>>>>>>>>> logger error")
 		time.Sleep(time.Second * 10)
 	}
 }
