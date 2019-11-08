@@ -1,6 +1,7 @@
 package log
 
 import (
+	"github.com/sanguohot/log/util"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -12,17 +13,15 @@ var (
 	Sugar  *zap.SugaredLogger
 	Logger *zap.Logger
 	// Atom.SetLevel(zap.DebugLevel) 程序运行时动态级别
-	Atom           zap.AtomicLevel
-	ServerType     = os.Getenv("SERVER_TYPE")
-	serverTypeProd = "production"
+	atom zap.AtomicLevel
 )
 
 func GetLogPath() string {
-	return filepath.Join("./", "app.log")
+	return filepath.Join(util.LogDirPath, util.LogFilePath)
 }
 
 func ServerTypeIsProd() bool {
-	if ServerType == serverTypeProd {
+	if util.ServerType == util.ServerTypeProd {
 		return true
 	}
 	return false
@@ -33,11 +32,11 @@ func init() {
 		config     zapcore.EncoderConfig
 		stackLevel zapcore.Level
 	)
-	Atom = zap.NewAtomicLevel()
+	atom = zap.NewAtomicLevel()
 	fileSync := zapcore.AddSync(&lumberjack.Logger{
 		Filename:   GetLogPath(),
-		MaxSize:    500, // MB
-		MaxBackups: 3,
+		MaxSize:    50, // MB
+		MaxBackups: 20,
 		MaxAge:     7, // days
 		LocalTime:  true,
 		Compress:   true,
@@ -49,17 +48,21 @@ func init() {
 	if ServerTypeIsProd() {
 		config = zap.NewProductionEncoderConfig()
 		stackLevel = zap.ErrorLevel
-		Atom.SetLevel(zap.InfoLevel)
+		atom.SetLevel(zap.InfoLevel)
 	} else {
 		config = zap.NewDevelopmentEncoderConfig()
 		stackLevel = zap.WarnLevel
-		Atom.SetLevel(zap.DebugLevel)
+		atom.SetLevel(zap.DebugLevel)
 	}
 	config.EncodeTime = zapcore.ISO8601TimeEncoder
-	core := zapcore.NewCore(
-		zapcore.NewJSONEncoder(config),
-		zapcore.NewMultiWriteSyncer(consoleSync, fileSync),
-		Atom, //debug,info,warn,error
+	//core := zapcore.NewCore(
+	//	zapcore.NewJSONEncoder(config),
+	//	zapcore.NewMultiWriteSyncer(consoleSync, fileSync),
+	//	atom, //debug,info,warn,error
+	//)
+	core := zapcore.NewTee(
+		zapcore.NewCore(zapcore.NewConsoleEncoder(config), consoleSync, atom), // 日志同步到控制台
+		zapcore.NewCore(zapcore.NewConsoleEncoder(config), fileSync, atom),    // 日志同步到app.log
 	)
 
 	Logger = zap.New(core, zap.AddCaller(), zap.AddStacktrace(stackLevel))
