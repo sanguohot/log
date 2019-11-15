@@ -114,6 +114,8 @@ func initFileLogConfig() logConfig {
 }
 
 func init() {
+	fmt.Println(runtime.GOARCH)
+	fmt.Println(runtime.GOOS)
 	configList := make([]logConfig, 0)
 	switch util.LogType {
 	case util.LogTypeFile:
@@ -123,9 +125,9 @@ func init() {
 		configList = append(configList, initFileLogConfig())
 	default:
 		configList = append(configList, initConsoleLogConfig())
-		if runtime.GOARCH[:3] != "arm" {
-			configList = append(configList, initFileLogConfig())
-		}
+		//if runtime.GOARCH[:3] != "arm" {
+			//configList = append(configList, initFileLogConfig())
+		//}
 	}
 	cores := make([]zapcore.Core, 0)
 	for _, v := range configList {
