@@ -1,21 +1,13 @@
 package main
 
 import (
-	"github.com/sanguohot/log/v2"
-	"time"
+	"fmt"
+	"github.com/sanguohot/log/test/child"
+	"runtime"
 )
 
 func main() {
-	for {
-		log.Sugar.Debug(">>>>>>>>>>>> sugar debug")
-		log.Sugar.Info(">>>>>>>>>>>> sugar info")
-		log.Sugar.Warn(">>>>>>>>>>>> sugar warn")
-		log.Sugar.Error(">>>>>>>>>>>> sugar error")
-
-		log.Logger.Debug(">>>>>>>>>>>> logger debug")
-		log.Logger.Info(">>>>>>>>>>>> logger info")
-		log.Logger.Warn(">>>>>>>>>>>> logger warn")
-		log.Logger.Error(">>>>>>>>>>>> logger error")
-		time.Sleep(time.Second * 10)
-	}
+	fmt.Println(runtime.GOARCH[:3])
+	fmt.Println(runtime.GOOS)
+	child.Test()
 }

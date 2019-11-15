@@ -4,6 +4,10 @@ import "os"
 
 var (
 	LogLevel       = os.Getenv("LOG_LEVEL")
+	LogType        = os.Getenv("LOG_TYPE")
+	LogTypeFile    = "file"
+	LogTypeConsole = "console"
+	LogTypeAll     = "all"
 	LogDirPath     = ".logs"
 	LogFilePath    = "app.log"
 	LinkFilePath   = "link.log"
