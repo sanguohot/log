@@ -17,7 +17,7 @@ var (
 )
 
 func GetLogPath() string {
-	return filepath.Join(util.LogDirPath, util.LogFilePath)
+	return filepath.Join(util.LogRoot, util.LogDirPath, util.LogFilePath)
 }
 
 func ServerTypeIsProd() bool {

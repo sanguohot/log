@@ -88,11 +88,12 @@ func initConsoleLogConfig() logConfig {
 
 func initFileLogConfig() logConfig {
 	fmt.Println("init file log")
-	err := os.MkdirAll(util.LogDirPath, os.ModePerm)
+	logDir := filepath.Join(util.LogRoot, util.LogDirPath)
+	err := os.MkdirAll(logDir, os.ModePerm)
 	if err != nil {
 		panic(err)
 	}
-	logFilePath := filepath.Join(util.LogDirPath, util.LogFilePath)
+	logFilePath := filepath.Join(logDir, util.LogFilePath)
 	hook := lumberjack.Logger{
 		Filename:   logFilePath,
 		MaxSize:    10, // MB

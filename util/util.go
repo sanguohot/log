@@ -8,6 +8,7 @@ var (
 	LogTypeFile    = "file"
 	LogTypeConsole = "console"
 	LogTypeAll     = "all"
+	LogRoot        = os.Getenv("LOG_ROOT")
 	LogDirPath     = ".logs"
 	LogFilePath    = "app.log"
 	LinkFilePath   = "link.log"
