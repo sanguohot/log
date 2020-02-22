@@ -10,7 +10,6 @@ import (
 	"io"
 	"os"
 	"path/filepath"
-	"runtime"
 	"time"
 )
 
@@ -73,7 +72,6 @@ func getEncodeConfig() zapcore.EncoderConfig {
 }
 
 func initConsoleLogConfig() logConfig {
-	fmt.Println("init console log")
 	// 实现判断日志等级的interface
 	level := IsLogLevelEnable
 	consoleSync := zapcore.AddSync(os.Stdout)
@@ -87,7 +85,6 @@ func initConsoleLogConfig() logConfig {
 }
 
 func initFileLogConfig() logConfig {
-	fmt.Println("init file log")
 	logDir := filepath.Join(util.LogRoot, util.LogDirPath)
 	err := os.MkdirAll(logDir, os.ModePerm)
 	if err != nil {
@@ -115,8 +112,6 @@ func initFileLogConfig() logConfig {
 }
 
 func init() {
-	fmt.Println(runtime.GOARCH)
-	fmt.Println(runtime.GOOS)
 	configList := make([]logConfig, 0)
 	switch util.LogType {
 	case util.LogTypeFile:
@@ -124,11 +119,16 @@ func init() {
 	case util.LogTypeAll:
 		configList = append(configList, initConsoleLogConfig())
 		configList = append(configList, initFileLogConfig())
+	case util.LogTypeOff:
+		fmt.Println("do not output or write any log")
 	default:
 		configList = append(configList, initConsoleLogConfig())
 		//if runtime.GOARCH[:3] != "arm" {
-			//configList = append(configList, initFileLogConfig())
+		//configList = append(configList, initFileLogConfig())
 		//}
+	}
+	if len(configList) <= 0 {
+		return
 	}
 	cores := make([]zapcore.Core, 0)
 	for _, v := range configList {
