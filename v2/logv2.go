@@ -90,7 +90,11 @@ func initFileLogConfig() logConfig {
 	if err != nil {
 		panic(err)
 	}
-	logFilePath := filepath.Join(logDir, util.LogFilePath)
+	logFileEnv := os.Getenv("LOG_FILE")
+	if logFileEnv == "" {
+		logFileEnv = util.LogFilePath
+	}
+	logFilePath := filepath.Join(logDir, logFileEnv)
 	hook := lumberjack.Logger{
 		Filename:   logFilePath,
 		MaxSize:    10, // MB

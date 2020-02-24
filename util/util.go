@@ -11,7 +11,7 @@ var (
 	LogTypeAll     = "all"
 	LogRoot        = os.Getenv("LOG_ROOT")
 	LogDirPath     = ".logs"
-	LogFilePath    = os.Getenv("LOG_FILE")
+	LogFilePath    = "app.log"
 	LinkFilePath   = "link.log"
 	LogLevelOff    = "off"
 	LogLevelDebug  = "debug"
@@ -22,9 +22,3 @@ var (
 	ServerType     = os.Getenv("SERVER_TYPE")
 	ServerTypeProd = "production"
 )
-
-func init() {
-	if LogFilePath == "" {
-		LogFilePath = "app.log"
-	}
-}
