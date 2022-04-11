@@ -117,19 +117,14 @@ func InitWithWriter(writer io.Writer) {
 	switch os.Getenv("LOG_TYPE") {
 	case util.LogTypeFile:
 		configList = append(configList, initFileLogConfig())
-	case util.LogTypeGui:
-		if writer == nil {
-			panic("writer required for gui type")
-		}
-		configList = append(configList, initLogConfig(writer))
 	case util.LogTypeAll:
 		configList = append(configList, initConsoleLogConfig())
 		configList = append(configList, initFileLogConfig())
-		if writer != nil {
-			configList = append(configList, initLogConfig(writer))
-		}
 	default:
 		configList = append(configList, initConsoleLogConfig())
+	}
+	if writer != nil {
+		configList = append(configList, initLogConfig(writer))
 	}
 	if len(configList) <= 0 {
 		return
