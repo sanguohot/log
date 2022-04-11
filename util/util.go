@@ -7,6 +7,7 @@ var (
 	LogType        = os.Getenv("LOG_TYPE")
 	LogTypeFile    = "file"
 	LogTypeConsole = "console"
+	LogTypeGui     = "gui"
 	LogTypeOff     = "off"
 	LogTypeAll     = "all"
 	LogRoot        = os.Getenv("LOG_ROOT")

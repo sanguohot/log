@@ -1,11 +1,11 @@
 package log
 
 import (
-	"fmt"
 	"github.com/sanguohot/log/util"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"io"
 	"os"
 	"path/filepath"
 )
@@ -68,14 +68,18 @@ func getEncodeConfig() zapcore.EncoderConfig {
 }
 
 func initConsoleLogConfig() logConfig {
+	return initLogConfig(os.Stdout)
+}
+
+func initLogConfig(writer io.Writer) logConfig {
 	// 实现判断日志等级的interface
 	level := IsLogLevelEnable
-	consoleSync := zapcore.AddSync(os.Stdout)
+	writerSync := zapcore.AddSync(writer)
 	// 最后创建具体的Logger
 	config := getEncodeConfig()
 	return logConfig{
 		encode: zapcore.NewConsoleEncoder(config),
-		sync:   consoleSync,
+		sync:   writerSync,
 		level:  level,
 	}
 }
@@ -99,35 +103,33 @@ func initFileLogConfig() logConfig {
 		Compress:   true, // disabled by default
 		LocalTime:  true,
 	}
-	// 实现判断日志等级的interface
-	level := IsLogLevelEnable
-	fileSync := zapcore.AddSync(&hook)
-	// 最后创建具体的Logger
-	config := getEncodeConfig()
-	return logConfig{
-		encode: zapcore.NewConsoleEncoder(config),
-		sync:   fileSync,
-		level:  level,
-	}
+	return initLogConfig(&hook)
 }
 
 // 不要小写的，否则会获取不到其它程序设置的环境变量
 // 等其它程序调用初始化，每个进程只需要在入口初始化一次
 func Init() {
+	InitWithWriter(nil)
+}
+
+func InitWithWriter(writer io.Writer) {
 	configList := make([]logConfig, 0)
 	switch os.Getenv("LOG_TYPE") {
 	case util.LogTypeFile:
 		configList = append(configList, initFileLogConfig())
+	case util.LogTypeGui:
+		if writer == nil {
+			panic("writer required for gui type")
+		}
+		configList = append(configList, initLogConfig(writer))
 	case util.LogTypeAll:
 		configList = append(configList, initConsoleLogConfig())
 		configList = append(configList, initFileLogConfig())
-	case util.LogTypeOff:
-		fmt.Println("do not output or write any log")
+		if writer != nil {
+			configList = append(configList, initLogConfig(writer))
+		}
 	default:
 		configList = append(configList, initConsoleLogConfig())
-		//if runtime.GOARCH[:3] != "arm" {
-		//configList = append(configList, initFileLogConfig())
-		//}
 	}
 	if len(configList) <= 0 {
 		return
